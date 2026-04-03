@@ -1,98 +1,134 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import {
+  ActivityIndicator,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuth } from '../context/AuthContext';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+export default function LoginScreen() {
+  const [email, setEmail]       = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError]       = useState('');
+  const { login, isLoading }    = useAuth();
+  const router                  = useRouter();
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
+  async function handleLogin() {
+    if (!email.trim() || !password) {
+      setError('Bitte E-Mail und Passwort eingeben.');
+      return;
+    }
+    setError('');
+    const result = await login(email, password);
+    if (result.success) {
+      if (result.role === 'caregiver') router.replace('/caregiver');
+      else if (result.role === 'casual') router.replace('/casual');
+      else router.replace('/home');
+    } else {
+      setError(result.error ?? 'Anmeldung fehlgeschlagen.');
+    }
   }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView
+        style={styles.inner}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <View style={styles.logoArea}>
+          <View style={styles.logoCircle}>
+            <Image
+              source={require('../../assets/images/icon.png')}
+              style={styles.logoImage}
+              resizeMode="contain"
+            />
+          </View>
+          <Text style={styles.appName}>CareThiq</Text>
+          <Text style={styles.tagline}>Deine Gesundheit. Dein Rhythmus.</Text>
+        </View>
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
+        <View style={styles.form}>
+          <Text style={styles.label}>E-Mail</Text>
+          <TextInput
+            style={styles.input}
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            autoCorrect={false}
+            keyboardType="email-address"
+            placeholder="z.B. maria@carethiq.de"
+            placeholderTextColor="#a0aec0"
           />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+          <Text style={styles.label}>Passwort</Text>
+          <TextInput
+            style={styles.input}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            placeholder="••••••••"
+            placeholderTextColor="#a0aec0"
+          />
+
+          {error ? <Text style={styles.error}>{error}</Text> : null}
+
+          <TouchableOpacity
+            style={[styles.loginBtn, isLoading && styles.loginBtnDisabled]}
+            onPress={handleLogin}
+            activeOpacity={0.8}
+            disabled={isLoading}
+          >
+            {isLoading
+              ? <ActivityIndicator color="white" />
+              : <Text style={styles.loginBtnText}>Anmelden</Text>
+            }
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.demoHint}>
+          <Text style={styles.demoHintTitle}>Demo-Zugang</Text>
+          <Text style={styles.demoHintLine}>Pfleger · maria@carethiq.de / test123</Text>
+        </View>
+
+        <View style={styles.watermarkArea}>
+          <Image
+            source={require('../../assets/images/icon.png')}
+            style={styles.watermarkImage}
+            resizeMode="contain"
+          />
+        </View>
+
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
-  },
+  container: { flex: 1, backgroundColor: '#f0f7f5' },
+  inner: { flex: 1, padding: 28, justifyContent: 'center' },
+  logoArea: { alignItems: 'center', marginBottom: 48 },
+  logoCircle: { width: 120, height: 120, borderRadius: 60, backgroundColor: '#d8ede8', alignItems: 'center', justifyContent: 'center', marginBottom: 16, shadowColor: '#4db89e', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.2, shadowRadius: 16, elevation: 6 },
+  logoImage: { width: 90, height: 90 },
+  appName: { fontSize: 36, fontWeight: '800', color: '#2d3748', letterSpacing: -1 },
+  tagline: { fontSize: 15, color: '#718096', marginTop: 6 },
+  form: { backgroundColor: 'white', borderRadius: 24, padding: 24, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.06, shadowRadius: 12, elevation: 3, marginBottom: 24 },
+  label: { fontSize: 13, fontWeight: '700', color: '#718096', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 8, marginTop: 4 },
+  input: { backgroundColor: '#f7fafc', borderRadius: 14, padding: 16, fontSize: 16, color: '#2d3748', marginBottom: 16, borderWidth: 1, borderColor: '#e2e8f0' },
+  error: { color: '#cc1111', fontSize: 14, fontWeight: '600', marginBottom: 12, textAlign: 'center' },
+  loginBtn: { backgroundColor: '#4db89e', borderRadius: 50, padding: 18, alignItems: 'center', marginTop: 4, shadowColor: '#4db89e', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 4 },
+  loginBtnDisabled: { opacity: 0.6 },
+  loginBtnText: { color: 'white', fontSize: 17, fontWeight: '800' },
+  demoHint: { backgroundColor: 'rgba(77, 184, 158, 0.08)', borderRadius: 16, padding: 16, alignItems: 'center', borderWidth: 1, borderColor: 'rgba(77, 184, 158, 0.2)' },
+  demoHintTitle: { fontSize: 13, fontWeight: '700', color: '#4db89e', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.8 },
+  demoHintLine: { fontSize: 14, color: '#718096', marginBottom: 3 },
+  watermarkArea: { alignItems: 'center', marginTop: 32 },
+  watermarkImage: { width: 48, height: 48, opacity: 0.08 },
 });

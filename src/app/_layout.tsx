@@ -1,16 +1,40 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import React from 'react';
-import { useColorScheme } from 'react-native';
+import { Stack, useRouter, useSegments } from 'expo-router';
+import { useEffect } from 'react';
+import { AuthProvider, useAuth } from '../context/AuthContext';
+import { DataProvider } from '../context/DataContext';
+import { setAuthToken } from '../services/api';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
+function AuthGuard() {
+  const { user } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  useEffect(() => {
+    setAuthToken(user?.token ?? null);
+
+    if (!user && segments[0] !== undefined) {
+      router.replace('/');
+    } else if (user && segments[0] === undefined) {
+      if (user.role === 'caregiver') {
+        router.replace('/caregiver');
+      } else if (user.role === 'casual') {
+        router.replace('/casual');
+      } else {
+        router.replace('/home');
+      }
+    }
+  }, [user, segments]);
+
+  return null;
+}
+
+export default function RootLayout() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
-    </ThemeProvider>
+    <DataProvider>
+      <AuthProvider>
+        <AuthGuard />
+        <Stack screenOptions={{ headerShown: false }} />
+      </AuthProvider>
+    </DataProvider>
   );
 }
