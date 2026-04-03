@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="intake-card">
+    <div class="intake-question">
+        <p class="intake-label">Medikamenteneinnahme</p>
+        <h2>Hast du <span>{{ med.name }}</span> eingenommen?</h2>
+        <p class="intake-sub">{{ med.dose }} &middot; {{ med.intake_time }} Uhr</p>
+
+        {% if med.food_required %}
+        <div class="intake-note">Mit Essen einnehmen</div>
+        {% endif %}
+
+        {% if med.notes %}
+        <div class="intake-note">{{ med.notes }}</div>
+        {% endif %}
+
+        <form method="POST">
+            {% if med.food_required %}
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <div class="checkbox-group">
+                    <input type="checkbox" name="food_eaten" id="food_eaten" value="yes">
+                    <label for="food_eaten">Ich habe etwas gegessen</label>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="intake-buttons">
+                <button type="submit" name="action" value="yes" class="btn-yes">Ja, eingenommen</button>
+                <button type="submit" name="action" value="no" class="btn-no">Übersprungen</button>
+            </div>
+        </form>
+
+        <a href="{{ url_for('main.home') }}" class="back-link">← Zurück</a>
+    </div>
+</div>
+{% endblock %}

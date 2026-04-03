@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="home-card">
+    <h1>Hallo, <span>{{ user.name }}</span></h1>
+    <p class="subtitle">Dein heutiger Medikamentenplan.</p>
+
+    <div class="medication-list">
+        {% if taken_today %}
+            {% for item in taken_today %}
+            <div class="med-card {% if item.log and item.log.taken %}med-done{% elif item.log and not item.log.taken %}med-skipped{% endif %}">
+                <div class="med-info">
+                    <h3>{{ item.med.name }}</h3>
+                    <p>{{ item.med.dose }} &middot; {{ item.med.intake_time }} Uhr</p>
+                    {% if item.med.notes %}
+                    <p class="med-notes">{{ item.med.notes }}</p>
+                    {% endif %}
+                    {% if item.med.food_required %}
+                    <span class="tag">Mit Essen einnehmen</span>
+                    {% endif %}
+                </div>
+                <div class="med-action">
+                    {% if item.log and item.log.taken %}
+                        <span class="status-done">✓ Eingenommen</span>
+                    {% elif item.log and not item.log.taken %}
+                        <span class="status-skipped">✗ Übersprungen</span>
+                    {% else %}
+                        <a href="{{ url_for('main.medication_intake', med_id=item.med.id) }}" class="btn-check">Einnehmen</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <p>Noch keine Medikamente zugewiesen.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

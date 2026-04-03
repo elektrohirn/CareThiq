@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="dashboard-header">
+        <h1>Dashboard <span>Pfleger</span></h1>
+        <a href="{{ url_for('main.patient_add') }}" class="btn-primary">+ Patient anlegen</a>
+    </div>
+
+    <div class="patient-list">
+        {% if patient_data %}
+            {% for entry in patient_data %}
+            <div class="patient-card">
+                <div class="patient-top">
+                    <div class="patient-info">
+                        <h3>{{ entry.patient.name }}</h3>
+                        <p>{{ entry.patient.email }}</p>
+                    </div>
+                    <div class="patient-actions">
+                        <a href="{{ url_for('main.patient_medication_add', patient_id=entry.patient.id) }}" class="btn-secondary">+ Medikament</a>
+                    </div>
+                </div>
+
+                {% if entry.med_status %}
+                <div class="patient-meds">
+                    {% for item in entry.med_status %}
+                    <div class="patient-med-row">
+                        <span class="med-name">{{ item.med.name }}</span>
+                        <span class="med-dose">{{ item.med.dose }}</span>
+                        <span class="med-time">{{ item.med.intake_time }} Uhr</span>
+                        {% if item.log and item.log.taken %}
+                            <span class="status-done">✓ Eingenommen</span>
+                        {% elif item.log and not item.log.taken %}
+                            <span class="status-skipped">✗ Übersprungen</span>
+                        {% else %}
+                            <span class="status-pending">⏳ Ausstehend</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="no-meds">Noch keine Medikamente zugewiesen.</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <p>Noch keine Patienten angelegt.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

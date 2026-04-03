@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-card">
+    <h1>Medikament für <span>{{ patient.name }}</span></h1>
+    <p class="subtitle">Medikament zuweisen und Einnahmeplan festlegen.</p>
+
+    <form method="POST">
+        <div class="form-group">
+            <label>Name des Medikaments</label>
+            <input type="text" name="name" required autofocus>
+        </div>
+        <div class="form-group">
+            <label>Dosierung (z.B. 500mg)</label>
+            <input type="text" name="dose" required>
+        </div>
+        <div class="form-group">
+            <label>Intervall (alle X Stunden)</label>
+            <input type="number" name="interval_hours" min="1" max="24" required>
+        </div>
+        <div class="form-group">
+            <label>Erste Einnahme um (Uhrzeit)</label>
+            <input type="time" name="intake_time" value="08:00" required>
+        </div>
+        <div class="form-group">
+            <label>Notizen (z.B. Nebenwirkungen)</label>
+            <textarea name="notes" rows="3"></textarea>
+        </div>
+        <div class="form-group checkbox-group">
+            <input type="checkbox" name="food_required" id="food_required">
+            <label for="food_required">Einnahme nur mit Essen</label>
+        </div>
+        <button type="submit" class="btn-primary">Speichern</button>
+        <a href="{{ url_for('main.dashboard') }}" class="btn-secondary" style="display:block; text-align:center; margin-top:0.75rem;">Abbrechen</a>
+    </form>
+</div>
+{% endblock %}
