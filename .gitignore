@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
 # dependencies
@@ -41,3 +42,12 @@ app-example
 # generated native folders
 /ios
 /android
+=======
+instance/
+__pycache__/
+*.pyc
+*.db
+.env
+.env.*
+*.log
+>>>>>>> 6dd27f570a1d1c562a27c76afdd0ff9beac03092

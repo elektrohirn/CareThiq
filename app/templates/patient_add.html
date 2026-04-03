@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-card">
+    <h1>Patient <span>anlegen</span></h1>
+    <p class="subtitle">Neuen Patienten in die Kartei aufnehmen.</p>
+
+    <form method="POST">
+        <div class="form-group">
+            <label>Name</label>
+            <input type="text" name="name" required autofocus>
+        </div>
+        <div class="form-group">
+            <label>E-Mail</label>
+            <input type="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label>Passwort (für Patient)</label>
+            <input type="password" name="password" required>
+        </div>
+        <button type="submit" class="btn-primary">Patient anlegen</button>
+        <a href="{{ url_for('main.dashboard') }}" class="btn-secondary" style="display:block; text-align:center; margin-top:0.75rem;">Abbrechen</a>
+    </form>
+</div>
+{% endblock %}
