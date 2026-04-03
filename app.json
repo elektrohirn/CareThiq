@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "CareThiq",
+    "slug": "careThiq-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "carethiqapp",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "icon": "./assets/images/icon.png"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#f0f7f5"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.elektrohirn.careThiqapp"
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#f0f7f5",
+          "android": {
+            "image": "./assets/images/icon.png",
+            "imageWidth": 160
+          }
+        }
+      ],
+      "expo-sharing"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}

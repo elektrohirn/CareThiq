@@ -1,171 +1,56 @@
-# CareThiq
+# Welcome to your Expo app 👋
 
-**DE** | [EN](#english)
+This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
----
+## Get started
 
-## Deutsch
+1. Install dependencies
 
-CareThiq ist eine mobile Healthcare-Management-App für die ambulante und stationäre Pflege. Sie verbindet Pflegekräfte, Patienten und Gelegenheitsnutzer über eine gemeinsame Plattform mit rollenbasiertem Zugriff.
+   ```bash
+   npm install
+   ```
 
-### Funktionen
+2. Start the app
 
-**Pflegekraft**
-- Patientenverwaltung mit Adresse, Geburtsdatum und Zimmer
-- Medikamentenverwaltung mit Wirkstoff-Autocomplete (RxNorm API)
-- GPS-Annäherungserkennung — automatische Benachrichtigung bei Patientennähe
-- Vitalwerte erfassen (Blutdruck, Puls, Gewicht)
-- Verhaltens-Tags pro Besuch
-- Pflegebericht pro Besuch
-- Statistik-Screen mit Wohlbefinden-, Vital- und Verhaltensverlauf (48h)
+   ```bash
+   npx expo start
+   ```
 
-**Patient**
-- Tagesübersicht der Medikamente
-- Einnahme bestätigen mit Wohlbefindens-Abfrage
-- Freistehende Wohlbefindens-Eingabe per Smiley-Skala
-- Notfall-Button mit direktem Notruf (112)
+In the output, you'll find options to open the app in a
 
-**Casual (ohne Account)**
-- Lokale Medikamentenverwaltung ohne Server
-- Export und Import der Daten
+- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
+- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
-### Technologie
+You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-| Bereich | Stack |
-|---|---|
-| Backend | Python · Flask · SQLAlchemy · Flask-JWT-Extended · Docker |
-| Datenbank | SQLite (dev) |
-| Frontend | React Native · Expo · TypeScript |
-| APIs | RxNorm (Medikamente) · Nominatim/OpenStreetMap (Adressen) |
+## Get a fresh project
 
-### Setup Backend
-
-Voraussetzungen: Docker Desktop
+When you're ready, run:
 
 ```bash
-cd backend
-docker-compose up --build
+npm run reset-project
 ```
 
-Backend läuft auf `http://localhost:5000`
+This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
 
-**Demo-Users anlegen** (einzeln in PowerShell):
+### Other setup steps
 
-```powershell
-Invoke-RestMethod -Uri http://localhost:5000/api/register -Method Post -ContentType "application/json" -Body '{"name":"Maria Hoffmann","email":"maria@carethiq.de","password":"test123","role":"caregiver"}'
+- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
+- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
+- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
 
-Invoke-RestMethod -Uri http://localhost:5000/api/register -Method Post -ContentType "application/json" -Body '{"name":"Sarah Müller","email":"sarah@carethiq.de","password":"test123","role":"patient"}'
+## Learn more
 
-Invoke-RestMethod -Uri http://localhost:5000/api/register -Method Post -ContentType "application/json" -Body '{"name":"Gast","email":"guest@carethiq.de","password":"test123","role":"casual"}'
-```
+To learn more about developing your project with Expo, look at the following resources:
 
-**DB zurücksetzen:**
+- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
+- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
 
-```powershell
-docker-compose down
-Remove-Item "instance\careThiq.db" -Force
-docker-compose up --build
-```
+## Join the community
 
-### Setup App
+Join our community of developers creating universal apps.
 
-Voraussetzungen: Node.js · Expo Go auf dem Gerät
-
-```bash
-cd app
-npm install
-npx expo start
-```
-
-IP-Adresse anpassen in `src/services/api.ts` und `src/context/AuthContext.tsx`:
-
-```typescript
-const API_BASE = 'http://DEINE_IP:5000/api';
-```
-
----
-
-<a name="english"></a>
-## English
-
-CareThiq is a mobile healthcare management app for outpatient and inpatient care. It connects caregivers, patients, and casual users through a shared platform with role-based access.
-
-### Features
-
-**Caregiver**
-- Patient management with address, date of birth, and room
-- Medication management with active ingredient autocomplete (RxNorm API)
-- GPS proximity detection — automatic notification when near a patient
-- Record vital signs (blood pressure, pulse, weight)
-- Behavior tags per visit
-- Care report per visit
-- Statistics screen with wellbeing, vitals, and behavior history (48h)
-
-**Patient**
-- Daily medication overview
-- Confirm intake with wellbeing check
-- Standalone wellbeing entry via smiley scale
-- Emergency button with direct emergency call (112)
-
-**Casual (no account required)**
-- Local medication management without a server
-- Export and import of data
-
-### Tech Stack
-
-| Layer | Stack |
-|---|---|
-| Backend | Python · Flask · SQLAlchemy · Flask-JWT-Extended · Docker |
-| Database | SQLite (dev) |
-| Frontend | React Native · Expo · TypeScript |
-| APIs | RxNorm (medications) · Nominatim/OpenStreetMap (addresses) |
-
-### Backend Setup
-
-Requirements: Docker Desktop
-
-```bash
-cd backend
-docker-compose up --build
-```
-
-Backend runs on `http://localhost:5000`
-
-**Create demo users** (one by one in PowerShell):
-
-```powershell
-Invoke-RestMethod -Uri http://localhost:5000/api/register -Method Post -ContentType "application/json" -Body '{"name":"Maria Hoffmann","email":"maria@carethiq.de","password":"test123","role":"caregiver"}'
-
-Invoke-RestMethod -Uri http://localhost:5000/api/register -Method Post -ContentType "application/json" -Body '{"name":"Sarah Müller","email":"sarah@carethiq.de","password":"test123","role":"patient"}'
-
-Invoke-RestMethod -Uri http://localhost:5000/api/register -Method Post -ContentType "application/json" -Body '{"name":"Gast","email":"guest@carethiq.de","password":"test123","role":"casual"}'
-```
-
-**Reset database:**
-
-```powershell
-docker-compose down
-Remove-Item "instance\careThiq.db" -Force
-docker-compose up --build
-```
-
-### App Setup
-
-Requirements: Node.js · Expo Go on your device
-
-```bash
-cd app
-npm install
-npx expo start
-```
-
-Update the IP address in `src/services/api.ts` and `src/context/AuthContext.tsx`:
-
-```typescript
-const API_BASE = 'http://YOUR_IP:5000/api';
-```
-
----
-
-*Entwickelt von Gordon Overend · elektrohirn · 2026*  
-*Developed by Gordon Overend · elektrohirn · 2026*
+- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
+- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
